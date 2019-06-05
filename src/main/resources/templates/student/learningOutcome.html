@@ -25,21 +25,24 @@
 					<table class="table table-hover table-bordered bg-white">
 						<thead class="thead-light">
 							<tr>
-								<th scope="col">STT</th>
-								<th scope="col">Kí hiệu</th>
-								<th scope="col">Tên chuẩn</th>
-								<th scope="col">Tỉ lệ hoàn thành</th>
-								<th scope="col">Đánh giá</th>
+								<th>STT</th>
+								<th>Kí hiệu</th>
+								<th>Tên chuẩn</th>
+								<th>Tỉ lệ hoàn thành</th>
+								<th>Đánh giá</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="lo ,itrStat : ${listLO}"  th:classappend="${lo.percent < 50}? 'chuadat' : 'dat' ">
+							<tr th:each="lo ,itrStat : ${listLO}"
+								th:classappend="${lo.percent < 50}? 'chuadat' : 'dat' ">
 
-								<td scope="col" th:text="${itrStat.index + 1}">1</td>
-								<td scope="col" th:text="${lo.learningoutcome.kiHieu}">Kí hiệu</td>
-								<td scope="col" th:text="${lo.learningoutcome.tenChuanDauRa}">Tên chuẩn</td>
-								<td scope="col" th:if="${lo.percent != null}" th:text="${lo.percent + '%'}">Tỉ lệ</td>
-								<td scope="col" th:text="${lo.evaluate}">Đánh giá</td>
+								<td th:text="${itrStat.index + 1}">1</td>
+								<td th:text="${lo.learningOutcome.sign}">Kí hiệu</td>
+								<td th:text="${lo.learningOutcome.nameLearningOutcome}">Tên chuẩn</td>
+								<td th:if="${lo.percent != null}" th:text="${lo.percent + '%'}">Tỉ
+									lệ</td>
+								<td th:if="${lo.percent >= 50}" th:text="'Đạt'">Đánh giá</td>
+								<td th:if="${lo.percent < 50}" th:text="'Chưa Đạt'">Đánh giá</td>
 							</tr>
 
 						</tbody>

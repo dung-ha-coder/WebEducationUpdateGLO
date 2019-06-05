@@ -49,15 +49,13 @@ public class StudentHomeController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userServiece.findByUsername(userDetails.getUsername());
 
-		model.addAttribute("userSubjectCoursesGoal",
-				userSubjectCoursesGoalService.findByUserAndSubjectOrderByCoursesgoalAsc(user, subject));
 		List<UserSubjectCoursesGoal> list = userSubjectCoursesGoalService
-				.findByUserAndSubjectOrderByCoursesgoalAsc(user, subject);
-
+				.findByUserAndSubjectOrderByCoursesGoalAsc(user, subject);
+		model.addAttribute("userSubjectCoursesGoal", list);
 		List<String> label = new ArrayList<String>();
 		List<Float> point = new ArrayList<Float>();
 		for (UserSubjectCoursesGoal userSubjectCoursesGoal : list) {
-			label.add(userSubjectCoursesGoal.getCoursesgoal().getSign());
+			label.add(userSubjectCoursesGoal.getCoursesGoal().getSign());
 			point.add(userSubjectCoursesGoal.getPercent());
 		}
 

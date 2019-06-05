@@ -12,6 +12,6 @@ import com.javawebspringboot.education.model.Subject;
 @Repository
 @Transactional
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
-	List<Answer> findBySubjectAndIdKithiOrderBySttAnswer(Subject subject, Integer idKithi);
+	List<Answer> findBySubjectAndIdExamOrderByIdExam(Subject subject, Integer idExam);
 
 }

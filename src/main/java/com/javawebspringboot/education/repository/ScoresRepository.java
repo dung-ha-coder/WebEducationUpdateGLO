@@ -7,18 +7,18 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.javawebspringboot.education.model.Scores;
+import com.javawebspringboot.education.model.ScoresTable;
 import com.javawebspringboot.education.model.Subject;
 import com.javawebspringboot.education.model.User;
 
 @Repository
 @Transactional
-public interface ScoresRepository extends JpaRepository<Scores, Integer> {
+public interface ScoresRepository extends JpaRepository<ScoresTable, Integer> {
 
-	List<Scores> findByUser(User user);
+	List<ScoresTable> findByUser(User user);
 	
-	List<Scores> findByMonhoc(Subject monhoc);
+	List<ScoresTable> findBySubject(Subject subject);
 	
-	Scores findByUserAndMonhoc(User user, Subject monhoc);
+	ScoresTable findByUserAndSubject(User user, Subject monhoc);
 
 }

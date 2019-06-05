@@ -16,91 +16,81 @@ import javax.persistence.Table;
 @Table(name = "user_subject_coursesgoal")
 public class UserSubjectCoursesGoal implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_user_subject_coursesgoal")
-    private Integer idUserSubjectCoursesgoal;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id_user_subject_coursesgoal")
+	private Integer idUserSubjectCoursesgoal;
 
-    @JoinColumn(name = "id_coursesgoal", referencedColumnName = "id_course_goal")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private CoursesGoal coursesgoal;
-    
-    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private User user;
+	@JoinColumn(name = "id_coursesgoal", referencedColumnName = "id_course_goal")
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private CoursesGoal coursesGoal;
 
-    @JoinColumn(name = "id_subject", referencedColumnName = "id_monhoc")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Subject subject;
+	@JoinColumn(name = "id_user", referencedColumnName = "id_user")
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private User user;
 
-    
+	@JoinColumn(name = "id_subject", referencedColumnName = "id_subject")
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	private Subject subject;
 
-    @Column(name = "percent")
-    private Float percent;
+	@Column(name = "percent")
+	private Float percent;
 
-    @Column(name = "evaluate")
-    private String evaluate;
 
-    public UserSubjectCoursesGoal() {
-    }
+	public UserSubjectCoursesGoal() {
+	}
 
-    public UserSubjectCoursesGoal(CoursesGoal coursesgoal, Subject subject, User user, Float percent, String evaluate) {
-        this.coursesgoal = coursesgoal;
-        this.subject = subject;
-        this.user = user;
-        this.percent = percent;
-        this.evaluate = evaluate;
-    }
+	public UserSubjectCoursesGoal(CoursesGoal coursesGoal, User user, Subject subject, Float percent) {
+		super();
+		this.coursesGoal = coursesGoal;
+		this.user = user;
+		this.subject = subject;
+		this.percent = percent;
+	}
 
-    public Integer getIdUserSubjectCoursesgoal() {
-        return idUserSubjectCoursesgoal;
-    }
+	public Integer getIdUserSubjectCoursesgoal() {
+		return idUserSubjectCoursesgoal;
+	}
 
-    public void setIdUserSubjectCoursesgoal(Integer idUserSubjectCoursesgoal) {
-        this.idUserSubjectCoursesgoal = idUserSubjectCoursesgoal;
-    }
+	public void setIdUserSubjectCoursesgoal(Integer idUserSubjectCoursesgoal) {
+		this.idUserSubjectCoursesgoal = idUserSubjectCoursesgoal;
+	}
 
-    public CoursesGoal getCoursesgoal() {
-        return coursesgoal;
-    }
+	public CoursesGoal getCoursesGoal() {
+		return coursesGoal;
+	}
 
-    public void setCoursesgoal(CoursesGoal coursesgoal) {
-        this.coursesgoal = coursesgoal;
-    }
+	public void setCoursesGoal(CoursesGoal coursesGoal) {
+		this.coursesGoal = coursesGoal;
+	}
 
-    public Subject getSubject() {
-        return subject;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public Subject getSubject() {
+		return subject;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public void setSubject(Subject subject) {
+		this.subject = subject;
+	}
 
-    public Float getPercent() {
-        return percent;
-    }
+	public Float getPercent() {
+		return percent;
+	}
 
-    public void setPercent(Float percent) {
-        this.percent = percent;
-    }
+	public void setPercent(Float percent) {
+		this.percent = percent;
+	}
 
-    public String getEvaluate() {
-        return evaluate;
-    }
-
-    public void setEvaluate(String evaluate) {
-        this.evaluate = evaluate;
-    }
+	
 
 }

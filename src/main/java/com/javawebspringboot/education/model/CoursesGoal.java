@@ -37,7 +37,7 @@ public class CoursesGoal implements Serializable {
 	@JoinColumn(name = "id_subject")
 	private Subject subject;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "coursesgoal", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "coursesGoal", fetch = FetchType.LAZY)
 	private List<UserSubjectCoursesGoal> userSubjectCoursesgoalList;
 
 	@ManyToMany(mappedBy = "coursesGoalList", fetch = FetchType.LAZY)

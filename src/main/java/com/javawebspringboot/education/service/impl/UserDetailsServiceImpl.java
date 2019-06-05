@@ -20,26 +20,26 @@ import com.javawebspringboot.education.repository.UserRepository;
 @Service
 @Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
-	@Autowired
-	private UserRepository userRepository;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByUsername(username);
-		if (user == null) {
-			throw new UsernameNotFoundException("User not found");
-		}
+    @Autowired
+    private UserRepository userRepository;
 
-		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-		List<Role> roles = user.getRoleList();
-		
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
 
-		for (Role role : roles) {
-			grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-		}
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        List<Role> roles = user.getRoleList();
 
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
-				grantedAuthorities);
-	}
+        for (Role role : roles) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getNameRole()));
+        }
+
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                grantedAuthorities);
+    }
 
 }

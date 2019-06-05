@@ -11,7 +11,7 @@ public class ExceptionController implements ErrorController {
 	public String error_403() {
 		return "redirect:/loginHandler";
 	}
-	
+
 	@RequestMapping("/error")
 	public String error() {
 		return "redirect:/loginHandler";
@@ -21,6 +21,5 @@ public class ExceptionController implements ErrorController {
 	public String getErrorPath() {
 		return "/error";
 	}
-	
-	
+
 }

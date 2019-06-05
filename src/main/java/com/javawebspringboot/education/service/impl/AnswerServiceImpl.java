@@ -14,9 +14,9 @@ public class AnswerServiceImpl implements AnswerService {
 	private AnswerRepository answerRepository;
 
 	@Override
-	public List<Answer> findBySubjectAndIdKithi(Subject subject, Integer idKithi) {
+	public List<Answer> findBySubjectAndIdExamOrderByIdExam(Subject subject, Integer idExam) {
 		// TODO Auto-generated method stub
-		return answerRepository.findBySubjectAndIdKithiOrderBySttAnswer(subject, idKithi);
+		return answerRepository.findBySubjectAndIdExamOrderByIdExam(subject, idExam);
 	}
 
 }

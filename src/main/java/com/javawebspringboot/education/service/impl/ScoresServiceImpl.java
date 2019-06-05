@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.javawebspringboot.education.model.Scores;
+import com.javawebspringboot.education.model.ScoresTable;
 import com.javawebspringboot.education.model.Subject;
 import com.javawebspringboot.education.model.User;
 import com.javawebspringboot.education.repository.ScoresRepository;
@@ -18,13 +18,13 @@ public class ScoresServiceImpl implements ScoresService {
     private ScoresRepository scoresRepository;
 
     @Override
-    public List<Scores> findByUser(User user) {
+    public List<ScoresTable> findByUser(User user) {
         return scoresRepository.findByUser(user);
     }
 
 	@Override
-	public List<Scores> findBySubject(Subject subject) {
-		return scoresRepository.findByMonhoc(subject);
+	public List<ScoresTable> findBySubject(Subject subject) {
+		return scoresRepository.findBySubject(subject);
 	}
 
    

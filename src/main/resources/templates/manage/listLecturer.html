@@ -34,10 +34,10 @@
 									<td th:text="${itrStat.index + 1}">1</td>
 									<td th:text="${user.username} ">user</td>
 									<td th:text="${user.fullname}">full name</td>
-									<td th:text="${#dates.format(user.ngaySinh, 'dd-MM-yyyy')}">Ngày
+									<td th:text="${#dates.format(user.dayOfBirth, 'dd-MM-yyyy')}">Ngày
 										sinh</td>
 
-									<td th:text="${user.khoa.tenKhoa}">Khoa</td>
+									<td th:text="${user.department.nameDepartment}">Khoa</td>
 								</tr>
 
 							</tbody>

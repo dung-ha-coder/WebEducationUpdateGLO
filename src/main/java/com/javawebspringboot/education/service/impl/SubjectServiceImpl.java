@@ -24,7 +24,7 @@ import com.javawebspringboot.education.exception.ReadFileException;
 import com.javawebspringboot.education.model.Answer;
 import com.javawebspringboot.education.model.CoursesGoal;
 import com.javawebspringboot.education.model.LearningOutcome;
-import com.javawebspringboot.education.model.Scores;
+import com.javawebspringboot.education.model.ScoresTable;
 import com.javawebspringboot.education.model.Subject;
 import com.javawebspringboot.education.model.User;
 import com.javawebspringboot.education.model.UserLearningOutcome;
@@ -55,14 +55,14 @@ public class SubjectServiceImpl implements SubjectService {
 	private ScoresRepository scoresRepository;
 
 	@Autowired
-	private UserSubjectCoursesGoalRepository userSubjectCoursesGoalRepository;
+	private UserLearningOutcomeRepository userLearningOutcomeRepository;
 
 	@Autowired
-	private UserLearningOutcomeRepository userLearningOutcomeRepository;
+	private UserSubjectCoursesGoalRepository userSubjectCoursesGoalRepository;
 
 	@Override
 	public List<TableScore> fileHandler(MultipartFile fileExcel) throws ReadFileException {
-		Workbook workbook;
+		Workbook workbook = null;
 		List<TableScore> listTableScore = new ArrayList<TableScore>();
 
 		String lowerCaseFileName = fileExcel.getOriginalFilename().toLowerCase();
@@ -96,14 +96,14 @@ public class SubjectServiceImpl implements SubjectService {
 
 							// ma so sinh vien
 							if (columnIndex == 1) {
-								String mssv = cell.getStringCellValue();
-								tableScore.setMaSV(mssv);
+								String codeStudent = cell.getStringCellValue();
+								tableScore.setCodeStudent(codeStudent);
 							}
 
 							// ho ten sinh vien
 							if (columnIndex == 2) {
-								String hoTen = cell.getStringCellValue();
-								tableScore.setTenSV(hoTen);
+								String nameStudent = cell.getStringCellValue();
+								tableScore.setNameStudent(nameStudent);
 							}
 							if (columnIndex > 2) {
 								if (cell.getCellType() == Cell.CELL_TYPE_STRING || cell.getNumericCellValue() > 10
@@ -120,7 +120,7 @@ public class SubjectServiceImpl implements SubjectService {
 
 							}
 						}
-						tableScore.setDsDiem(diems);
+						tableScore.setScoreList(diems);
 						listTableScore.add(tableScore);
 
 					}
@@ -160,14 +160,14 @@ public class SubjectServiceImpl implements SubjectService {
 
 							// ma so sinh vien
 							if (columnIndex == 1) {
-								String mssv = cell.getStringCellValue();
-								tableScore.setMaSV(mssv);
+								String codeStudent = cell.getStringCellValue();
+								tableScore.setCodeStudent(codeStudent);
 							}
 
 							// ho ten sinh vien
 							if (columnIndex == 2) {
-								String hoTen = cell.getStringCellValue();
-								tableScore.setTenSV(hoTen);
+								String nameStudent = cell.getStringCellValue();
+								tableScore.setNameStudent(nameStudent);
 							}
 							if (columnIndex > 2) {
 								if (cell.getCellType() == Cell.CELL_TYPE_STRING || cell.getNumericCellValue() > 10
@@ -184,7 +184,7 @@ public class SubjectServiceImpl implements SubjectService {
 
 							}
 						}
-						tableScore.setDsDiem(diems);
+						tableScore.setScoreList(diems);
 						listTableScore.add(tableScore);
 
 					}
@@ -234,7 +234,7 @@ public class SubjectServiceImpl implements SubjectService {
 	public void readData(List<TableScore> listTableScore, Integer idSubject, String cotDiem) {
 		// 1 mon hoc chi co nhieu nhat 4 cot diem chinh
 		// vi the khi client truyen len chuoi -> ma cot diem
-		int idCotDiem = getIdCotDiem(cotDiem);
+		int idExam = getIdCotDiem(cotDiem);
 		Subject subject = subjectRepository.findByIdSubject(idSubject);
 
 		// lay du lieu bang anwer de biet duoc cau hoi nao, cua mon hoc nay, ung voi ki
@@ -245,17 +245,9 @@ public class SubjectServiceImpl implements SubjectService {
 		// vi du: cau hoi 1, mon cong nghe java, ki thi giua ki
 		// se co cac chuan G1, G3,G4,...
 
-		List<Answer> answerList = answerRepository.findBySubjectAndIdKithiOrderBySttAnswer(subject, idCotDiem);
-
+		List<Answer> answerList = answerRepository.findBySubjectAndIdExamOrderByIdExam(subject, idExam);
 		// tao Map chua key la CoursesGoal va value la %G dat duoc
 		Map<CoursesGoal, Float> coursesGoalMap = new HashMap<>();
-		for (Answer answer : answerList) {
-			for (CoursesGoal cg : answer.getCoursesGoalList()) {
-				coursesGoalMap.put(cg, null);
-			}
-
-		}
-		Set<CoursesGoal> coursesGoalsSet = coursesGoalMap.keySet();
 
 		// tung dong du lieu trong table da duoc luu tru trong listTableScore
 		// lap tung phan tu trong listTableScore <=> lay dong trong table
@@ -263,61 +255,117 @@ public class SubjectServiceImpl implements SubjectService {
 		// maSV | tenSV | diem cau 1| diem cau 2 | diem cau 3 | ....| diem tong
 
 		for (TableScore score : listTableScore) {
-			String maSV = score.getMaSV();
+			String maSV = score.getCodeStudent();
 			User sinhVien = userRepository.findByUsername(maSV);
-			// co the co nhung G ton tai trong nhieu cot diem
-			// vi the phai lay % G dat duoc so tinh tiep
-			List<UserSubjectCoursesGoal> userSubjectCoursesGoals = userSubjectCoursesGoalRepository
-					.findByUserAndSubject(sinhVien, subject);
 
-			// lay %G da dat duoc
-			// can thiet khi trong ki thi khac co cung G voi ki thi hien tai
-			if (!userSubjectCoursesGoals.isEmpty()) {
-				for (UserSubjectCoursesGoal uscg : userSubjectCoursesGoals) {
-					for (CoursesGoal coursesGoal : coursesGoalsSet) {
-						if (coursesGoal.equals(uscg.getCoursesgoal())) {
-							float tranPhanDaDatDuoc = uscg.getPercent();
-							coursesGoalMap.put(coursesGoal, tranPhanDaDatDuoc);
-						}
-					}
-				}
-			}
+			// khoi tao lai tung gia tri G cho tung sinhVien
+			initValueMap(coursesGoalMap, answerList);
+
+			Map<LearningOutcome, Float> learningOutcomeMap = new HashMap<LearningOutcome, Float>();
 
 			// tong so cot diem tu cau 1 , cau 2 ... -> diem tong
-			int tongCotDiem = score.getDsDiem().size();
+			int tongCotDiem = score.getScoreList().size();
 			for (int i = 0; i < tongCotDiem; i++) {
-				if ((i < tongCotDiem - 1) && (i == answerList.get(i).getSttAnswer() - 1)) {
+				// diem cau cac cau trong 1 bai thi
+				if ((i < tongCotDiem - 1)) {
 					// diem tung cau hoi
 					// lay cot diem thu i trong bang
-					float diem = score.getDsDiem().get(i);
+					float diem = score.getScoreList().get(i);
 
 					float diem1Cau = (float) (10.0 / (tongCotDiem - 1));
 					float phanTramG = (diem / diem1Cau) * 100;
-					// lay cac G cua cau hoi i
-					for (int j = 0; j < answerList.get(i).getCoursesGoalList().size(); j++) {
-						// lay ra cau hoi thu i co Gj
-						// cau hoi j co G_j+1
-						CoursesGoal coursesGoal = answerList.get(i).getCoursesGoalList().get(j);
-						if (coursesGoalMap.get(coursesGoal) == null) {
-							coursesGoalMap.put(coursesGoal, phanTramG);
 
-						} else {
-							coursesGoalMap.put(coursesGoal, (coursesGoalMap.get(coursesGoal) + phanTramG) / 2);
-						}
-					}
+					// dua gia tri cua G tung cau hoi vao Map - co G da ton tai trong csdl
+					// -> can tim %G cua sinh vien - mon hoc
 
+					putValueToMap(answerList, i, coursesGoalMap, phanTramG, learningOutcomeMap);
+
+					// tong diem cua bai thi
 				} else {
-					// diem tong
+					float diemTong = score.getScoreList().get(i);
 					// luu diem cho sinh vien
-					float diemTong = score.getDsDiem().get(i);
-					saveTableScore(sinhVien, subject, idCotDiem, diemTong);
+					saveTableScore(sinhVien, subject, idExam, diemTong);
 
 				}
 
 			}
 
 			// luu nhung G ma sinh vien nay dat duoc
-			saveCourseGoal(coursesGoalMap, sinhVien, subject);
+			//saveCourseGoal(coursesGoalMap, sinhVien, subject);
+			saveLearningOutcome(learningOutcomeMap, sinhVien);
+
+		}
+
+	}
+
+	private void saveLearningOutcome(Map<LearningOutcome, Float> learningOutcomeMap, User sinhVien) {
+		List<UserLearningOutcome> userLearningOutcomeList = userLearningOutcomeRepository.findByUser(sinhVien);
+		for (LearningOutcome learningOutcome : learningOutcomeMap.keySet()) {
+			UserLearningOutcome userLearningOutcome = checkExistLearningOutcome(learningOutcome,
+					userLearningOutcomeList);
+			// da ton tai trong csdl
+			if (userLearningOutcome != null) {
+				userLearningOutcome.setPercent(learningOutcomeMap.get(learningOutcome));
+
+			} else {
+				// chua ton tai
+				userLearningOutcome = new UserLearningOutcome(sinhVien, learningOutcome,
+						learningOutcomeMap.get(learningOutcome));
+
+			}
+			userLearningOutcomeRepository.save(userLearningOutcome);
+
+		}
+
+	}
+
+	private UserLearningOutcome checkExistLearningOutcome(LearningOutcome learningOutcome,
+			List<UserLearningOutcome> userLearningOutcomeList) {
+		for (UserLearningOutcome userLearningOutcome : userLearningOutcomeList) {
+			if (userLearningOutcome.getLearningOutcome().equals(learningOutcome)) {
+				return userLearningOutcome;
+			}
+		}
+		return null;
+	}
+
+	private void putValueToMap(List<Answer> answerList, int i, Map<CoursesGoal, Float> coursesGoalMap, float phanTramG,
+			Map<LearningOutcome, Float> learningOutcomeMap) {
+
+		// cau hoi co nhieu G
+		for (int j = 0; j < answerList.get(i).getCoursesGoalList().size(); j++) {
+			// lay ra cau hoi thu i co Gj
+			// cau hoi j co G_j+1
+			CoursesGoal coursesGoal = answerList.get(i).getCoursesGoalList().get(j);
+			if (coursesGoalMap.get(coursesGoal) == null) {
+				coursesGoalMap.put(coursesGoal, phanTramG);
+
+			} else {
+				phanTramG = (coursesGoalMap.get(coursesGoal) + phanTramG) / 2;
+				coursesGoalMap.put(coursesGoal, phanTramG);
+			}
+			putValueLOToMap(coursesGoal, learningOutcomeMap, phanTramG);
+		}
+
+	}
+
+	private void putValueLOToMap(CoursesGoal coursesGoal, Map<LearningOutcome, Float> learningOutcomeMap,
+			float phanTram) {
+		for (LearningOutcome learningOutcome : coursesGoal.getLearningOutcomeList()) {
+			if (learningOutcomeMap.get(learningOutcome) == null) {
+				learningOutcomeMap.put(learningOutcome, phanTram);
+			} else {
+				learningOutcomeMap.put(learningOutcome, (learningOutcomeMap.get(learningOutcome) + phanTram) / 2);
+			}
+		}
+
+	}
+
+	private void initValueMap(Map<CoursesGoal, Float> coursesGoalMap, List<Answer> answerList) {
+		for (Answer answer : answerList) {
+			for (CoursesGoal cg : answer.getCoursesGoalList()) {
+				coursesGoalMap.put(cg, null);
+			}
 
 		}
 
@@ -325,252 +373,83 @@ public class SubjectServiceImpl implements SubjectService {
 
 	private void saveCourseGoal(Map<CoursesGoal, Float> coursesGoalMap, User sinhVien, Subject subject) {
 
-		List<UserSubjectCoursesGoal> userSubjectCoursesGoals = userSubjectCoursesGoalRepository
+		List<UserSubjectCoursesGoal> userSubjectCoursesGoalList = userSubjectCoursesGoalRepository
 				.findByUserAndSubject(sinhVien, subject);
-		Set<CoursesGoal> coursesGoalsSetG = coursesGoalMap.keySet();
-		Set<CoursesGoal> coursesGoalsSetLO = coursesGoalMap.keySet();
-		// luu G
-		saveCouseGoalToDatabase(coursesGoalMap, userSubjectCoursesGoals, coursesGoalsSetG, sinhVien, subject);
-		// sau khi luu G xong thi ta phai xu li luon ca LO lien quan den cac G
 
-		saveLearningOutcomeToDatatase(coursesGoalMap, sinhVien, coursesGoalsSetLO);
-
-	}
-
-	private void saveLearningOutcomeToDatatase(Map<CoursesGoal, Float> coursesGoalMap, User sinhVien,
-			Set<CoursesGoal> coursesGoalsSetLO) {
-
-		// tim cac user nam trong userLearningOutcomeRepository de update LO
-		List<UserLearningOutcome> userLearningOutcomeList = userLearningOutcomeRepository.findByUser(sinhVien);
-
-		// update LO
-		// update nhung LO da ton tai trong CSDL
-		if (!userLearningOutcomeList.isEmpty()) {
-			for (UserLearningOutcome userLearningOutcome : userLearningOutcomeList) {
-				for (CoursesGoal coursesGoal : coursesGoalsSetLO) {
-
-					// tim user da dat LO nao de update %LO them
-					for (LearningOutcome learningOutcome : coursesGoal.getLearningOutcomeList()) {
-
-						if (userLearningOutcome.getLearningoutcome().equals(learningOutcome)) {
-							// lay phan %LO cu
-							float oldPercent = 0;
-							try {
-								oldPercent = userLearningOutcome.getPercent();
-							} catch (Exception e) {
-								oldPercent = 0;
-							}
-							float newPercent = coursesGoalMap.get(coursesGoal);
-							float percent = (oldPercent + newPercent) / 2;
-							String value = "";
-							if (percent >= 50) {
-								value = "Đạt";
-							} else {
-								value = "Chưa đạt";
-							}
-							userLearningOutcome.setEvaluate(value);
-							userLearningOutcome.setPercent(percent);
-
-							// remove CoursesGoal da duoc update khoi Set de bi trung voi cac LO sau nay
-							coursesGoalsSetLO.remove(coursesGoal);
-							break;
-
-						}
-					}
-				}
-
+		for (CoursesGoal coursesGoal : coursesGoalMap.keySet()) {
+			UserSubjectCoursesGoal userSubjectCoursesGoal = checkExistCoursesGoal(coursesGoal,
+					userSubjectCoursesGoalList);
+			// da ton tai - can update %G
+			if (userSubjectCoursesGoal != null) {
+				userSubjectCoursesGoal.setPercent(coursesGoalMap.get(coursesGoal));
+			} else {
+				// chua ton tai new UserSubjectCoursesGoal
+				userSubjectCoursesGoal = new UserSubjectCoursesGoal(coursesGoal, sinhVien, subject,
+						coursesGoalMap.get(coursesGoal));
 			}
-		}
-
-		// THEM MOI LO
-		if (!coursesGoalsSetLO.isEmpty()) {
-			for (CoursesGoal coursesGoal : coursesGoalsSetLO) {
-				for (LearningOutcome learningOutcome : coursesGoal.getLearningOutcomeList()) {
-					// phai kiem tra lai 1 lan nua de du lieu trong list "userLearningOutcomeList"
-					// de khong bi trung du lieu
-					// neu chua co thi new Oject moi
-					// neu da ton tai thi phai update gia tri trong list
-					UserLearningOutcome check = kiemTraLoInList(learningOutcome, userLearningOutcomeList);
-					// da ton tai
-					if (check != null) {
-						// lay % cu
-						float percent = check.getPercent();
-						String value = "";
-						if (percent >= 50) {
-							value = "Đạt";
-						} else {
-							value = "Chưa đạt";
-						}
-						check.setEvaluate(value);
-						check.setPercent(percent);
-
-					} else {
-						float percent = coursesGoalMap.get(coursesGoal);
-						String value = "";
-						if (percent >= 50) {
-							value = "Đạt";
-						} else {
-							value = "Chưa đạt";
-						}
-
-						UserLearningOutcome userLearningOutcome = new UserLearningOutcome(sinhVien, learningOutcome,
-								percent, value);
-						userLearningOutcomeList.add(userLearningOutcome);
-					}
-
-				}
-			}
-		}
-		// LUU TUNG UserLearningOutcome trong userLearningOutcomeList VAO CSDL
-		for (UserLearningOutcome userLearningOutcome : userLearningOutcomeList) {
-			System.out.println("save lo to database");
-			userLearningOutcomeRepository.save(userLearningOutcome);
-
+			// luu vao csdl
+			// userSubjectCoursesGoalRepository.save(userSubjectCoursesGoal);
 		}
 
 	}
 
-	private UserLearningOutcome kiemTraLoInList(LearningOutcome learningOutcome,
-			List<UserLearningOutcome> userLearningOutcomeList) {
-		for (UserLearningOutcome userLearningOutcome : userLearningOutcomeList) {
-			if (userLearningOutcome.getLearningoutcome().equals(learningOutcome)) {
-				// da ton tai
-				return userLearningOutcome;
+	private UserSubjectCoursesGoal checkExistCoursesGoal(CoursesGoal coursesGoal,
+			List<UserSubjectCoursesGoal> userSubjectCoursesGoalList) {
+		for (UserSubjectCoursesGoal userSubjectCoursesGoal : userSubjectCoursesGoalList) {
+			if (userSubjectCoursesGoal.getCoursesGoal().equals(coursesGoal)) {
+				return userSubjectCoursesGoal;
 			}
 		}
 
-		// chua ton tai
 		return null;
 	}
 
-	private void saveCouseGoalToDatabase(Map<CoursesGoal, Float> coursesGoalMap,
-			List<UserSubjectCoursesGoal> userSubjectCoursesGoals, Set<CoursesGoal> coursesGoalsSet, User sinhVien,
-			Subject subject) {
+	private void saveTableScore(User sinhVien, Subject subject, int idExam, float score) {
+		ScoresTable scoresTable = scoresRepository.findByUserAndSubject(sinhVien, subject);
+		if (scoresTable == null) {
+			scoresTable = new ScoresTable();
+		}
+		switch (idExam) {
+		case 1:
+			scoresTable.setScoreProcess(score);
 
-		if (userSubjectCoursesGoals.isEmpty()) {
-			userSubjectCoursesGoals = new ArrayList<UserSubjectCoursesGoal>();
-			for (CoursesGoal coursesGoal : coursesGoalsSet) {
-				UserSubjectCoursesGoal userSubjectCoursesGoal = new UserSubjectCoursesGoal();
-				userSubjectCoursesGoal.setCoursesgoal(coursesGoal);
-				userSubjectCoursesGoal.setUser(sinhVien);
-				userSubjectCoursesGoal.setSubject(subject);
-				float percent = coursesGoalMap.get(coursesGoal);
-				userSubjectCoursesGoal.setPercent(percent);
-				if (percent >= 50) {
-					userSubjectCoursesGoal.setEvaluate("Đạt");
-				} else {
-					userSubjectCoursesGoal.setEvaluate("Chưa đạt");
-				}
-				userSubjectCoursesGoals.add(userSubjectCoursesGoal);
-
-			}
-		} else {
-			// cap nhat nhung cai da co va them nhung cai chua co
-
-			// cap nhat cai da co
-
-			for (int i = 0; i < userSubjectCoursesGoals.size(); i++) {
-				for (CoursesGoal coursesGoal : coursesGoalsSet) {
-					boolean check = false;
-					if (coursesGoal.equals(userSubjectCoursesGoals.get(i).getCoursesgoal())) {
-						float percent = coursesGoalMap.get(coursesGoal);
-						String evaluate = "";
-						if (percent >= 50) {
-							evaluate = "Đạt";
-						} else {
-							evaluate = "Chưa đạt";
-						}
-
-						UserSubjectCoursesGoal userUpdate = userSubjectCoursesGoals.get(i);
-						userUpdate.setUser(sinhVien);
-						userUpdate.setSubject(subject);
-						userUpdate.setCoursesgoal(coursesGoal);
-						userUpdate.setPercent(percent);
-						userUpdate.setEvaluate(evaluate);
-						userSubjectCoursesGoals.set(i, userUpdate);
-						coursesGoalsSet.remove(coursesGoal);
-						check = true;
-					}
-					if (check == true) {
-						break;
-					}
-				}
-			}
-
-			// them cai chua co
-			if (!coursesGoalsSet.isEmpty()) {
-				for (CoursesGoal coursesGoal : coursesGoalsSet) {
-
-					UserSubjectCoursesGoal userSubjectCoursesGoal = new UserSubjectCoursesGoal();
-					userSubjectCoursesGoal.setCoursesgoal(coursesGoal);
-					userSubjectCoursesGoal.setUser(sinhVien);
-					userSubjectCoursesGoal.setSubject(subject);
-					float percent = coursesGoalMap.get(coursesGoal);
-					userSubjectCoursesGoal.setPercent(percent);
-					if (percent >= 50) {
-						userSubjectCoursesGoal.setEvaluate("Đạt");
-					} else {
-						userSubjectCoursesGoal.setEvaluate("Chưa đạt");
-					}
-					userSubjectCoursesGoals.add(userSubjectCoursesGoal);
-				}
-			}
+			break;
+		case 2:
+			scoresTable.setScorePractice(score);
+			break;
+		case 3:
+			scoresTable.setScoreMidTerm(score);
+			break;
+		case 4:
+			scoresTable.setScoreEndTerm(score);
+			break;
 
 		}
 
-		// luu vao co so du lieu
-		for (UserSubjectCoursesGoal userSubjectCoursesGoal : userSubjectCoursesGoals) {
-			userSubjectCoursesGoalRepository.save(userSubjectCoursesGoal);
-		}
-	}
-
-	private void saveTableScore(User sinhVien, Subject subject, int idCotDiem, float diemTong) {
-		Scores scores = scoresRepository.findByUserAndMonhoc(sinhVien, subject);
-		if (scores == null) {
-			scores = new Scores();
-		}
-		if (idCotDiem == 1) {
-			scores.setDiemQt(diemTong);
-
-		}
-
-		if (idCotDiem == 2) {
-			scores.setDiemTh(diemTong);
-		}
-
-		if (idCotDiem == 3) {
-			scores.setDiemGk(diemTong);
-		}
-
-		if (idCotDiem == 4) {
-			// chua tinh diem trung binh mon hoc
-			scores.setDiemCk(diemTong);
-		}
-
-		scores.setIdUser(sinhVien);
-		scores.setMonhoc(subject);
-		scoresRepository.save(scores);
+		scoresTable.setUser(sinhVien);
+		scoresTable.setSubject(subject);
+		scoresRepository.save(scoresTable);
 	}
 
 	private int getIdCotDiem(String cotDiem) {
-		int idCotDiem = 0;
+		int idExam = 0;
 		switch (cotDiem) {
 		case "diem-thuc-hanh":
-			idCotDiem = 1;
+			idExam = 1;
 			break;
 		case "diem-qua-trinh":
-			idCotDiem = 2;
+			idExam = 2;
 			break;
 
 		case "diem-giua-ki":
-			idCotDiem = 3;
+			idExam = 3;
 			break;
 
 		case "diem-cuoi-ki":
-			idCotDiem = 4;
+			idExam = 4;
 			break;
 
 		}
-		return idCotDiem;
+		return idExam;
 	}
 }

@@ -28,8 +28,8 @@ public class UserSubjectCoursesGoalServiceImpl implements UserSubjectCoursesGoal
 	}
 
 	@Override
-	public List<UserSubjectCoursesGoal> findByUserAndSubjectOrderByCoursesgoalAsc(User user, Subject subject) {
-		return userSubjectCoursesGoalRepository.findByUserAndSubjectOrderByCoursesgoalAsc(user, subject);
+	public List<UserSubjectCoursesGoal> findByUserAndSubjectOrderByCoursesGoalAsc(User user, Subject subject) {
+		return userSubjectCoursesGoalRepository.findByUserAndSubjectOrderByCoursesGoalAsc(user, subject);
 	}
 
 }

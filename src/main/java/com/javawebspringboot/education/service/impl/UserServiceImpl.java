@@ -15,28 +15,27 @@ import com.javawebspringboot.education.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-	@Autowired
-	private UserRepository userRepository;
 
-	@Override
-	public User findByUsername(String username) {
-		return userRepository.findByUsername(username);
-	}
+    @Autowired
+    private UserRepository userRepository;
 
-	@Override
-	public Page<User> findAllLecturer(Pageable pageable) {
-		List<Role> listRole = new ArrayList<Role>();
-		listRole.add(new Role(2));
-		return userRepository.findByRoleList(listRole, pageable);
-	}
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 
-	@Override
-	public Page<User> findAllStudent(Pageable pageable) {
-		List<Role> listRole = new ArrayList<Role>();
-		listRole.add(new Role(1));
-		return userRepository.findByRoleList(listRole, pageable);
-	}
+    @Override
+    public Page<User> findAllLecturer(Pageable pageable) {
+        List<Role> listRole = new ArrayList<Role>();
+        listRole.add(new Role(2));
+        return userRepository.findByRoleList(listRole, pageable);
+    }
 
-	
+    @Override
+    public Page<User> findAllStudent(Pageable pageable) {
+        List<Role> listRole = new ArrayList<Role>();
+        listRole.add(new Role(1));
+        return userRepository.findByRoleList(listRole, pageable);
+    }
 
 }

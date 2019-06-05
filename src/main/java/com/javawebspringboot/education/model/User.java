@@ -24,153 +24,152 @@ import javax.persistence.Table;
 
 public class User implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id_user", nullable = false)
-    private Integer idUser;
-    @Column(length = 45)
-    private String username;
-    @Column(length = 255)
-    private String password;
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id_user", nullable = false)
+	private Integer idUser;
+	@Column(length = 45)
+	private String username;
+	@Column(length = 255)
+	private String password;
 
-    @Column(name = "fullname")
-    private String fullname;
+	@Column(name = "fullname")
+	private String fullname;
 
-    @Column(name = "ngay_sinh")
-    private Date ngaySinh;
+	@Column(name = "day_of_birth")
+	private Date dayOfBirth;
 
-    @ManyToMany()
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id_user"), 
-    	inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "id_role"))
-    private List<Role> roleList;
+	@ManyToMany()
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id_user"), 
+	inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "id_role"))
+	private List<Role> roleList;
 
-    @ManyToMany
-    @JoinTable(name = "user_subject", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_monhoc", referencedColumnName = "id_monhoc"))
-    private List<Subject> subjects;
+	@ManyToMany
+	@JoinTable(name = "user_subject", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_subject", referencedColumnName = "id_subject"))
+	private List<Subject> subjects;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Scores> scoresList;
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<ScoresTable> scoresTableList;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<UserLearningOutcome> userLearningoutcomeList;
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<UserLearningOutcome> userLearningoutcomeList;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_khoa", referencedColumnName = "id_khoa")
-    private Khoa khoa;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_department", referencedColumnName = "id_department")
+	private Department department;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-    private List<UserSubjectCoursesGoal> userSubjectCoursesgoalList;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+	private List<UserSubjectCoursesGoal> userSubjectCoursesgoalList;
 
-    public User() {
-        super();
-    }
+	public User() {
+		super();
+	}
 
-    public User(String username, String password, String fullname, Date ngaySinh, List<Role> roleList, List<Subject> subjects, List<Scores> scoresList, List<UserLearningOutcome> userLearningoutcomeList, Khoa khoa, List<UserSubjectCoursesGoal> userSubjectCoursesgoalList) {
-        this.username = username;
-        this.password = password;
-        this.fullname = fullname;
-        this.ngaySinh = ngaySinh;
-        this.roleList = roleList;
-        this.subjects = subjects;
-        this.scoresList = scoresList;
-        this.userLearningoutcomeList = userLearningoutcomeList;
-        this.khoa = khoa;
-        this.userSubjectCoursesgoalList = userSubjectCoursesgoalList;
-    }
+	public User(String username, String password, String fullname, Date dayOfBirth, List<Role> roleList,
+			List<Subject> subjects, List<ScoresTable> scoresTableList,
+			List<UserLearningOutcome> userLearningoutcomeList, Department department,
+			List<UserSubjectCoursesGoal> userSubjectCoursesgoalList) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.fullname = fullname;
+		this.dayOfBirth = dayOfBirth;
+		this.roleList = roleList;
+		this.subjects = subjects;
+		this.scoresTableList = scoresTableList;
+		this.userLearningoutcomeList = userLearningoutcomeList;
+		this.department = department;
+		this.userSubjectCoursesgoalList = userSubjectCoursesgoalList;
+	}
 
-    public Integer getIdUser() {
-        return idUser;
-    }
+	public Integer getIdUser() {
+		return idUser;
+	}
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
-    }
+	public void setIdUser(Integer idUser) {
+		this.idUser = idUser;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public String getFullname() {
-        return fullname;
-    }
+	public String getFullname() {
+		return fullname;
+	}
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
 
-    public Date getNgaySinh() {
-        return ngaySinh;
-    }
+	public Date getDayOfBirth() {
+		return dayOfBirth;
+	}
 
-    public void setNgaySinh(Date ngaySinh) {
-        this.ngaySinh = ngaySinh;
-    }
+	public void setDayOfBirth(Date dayOfBirth) {
+		this.dayOfBirth = dayOfBirth;
+	}
 
-    public List<Role> getRoleList() {
-        return roleList;
-    }
+	public List<Role> getRoleList() {
+		return roleList;
+	}
 
-    public void setRoleList(List<Role> roleList) {
-        this.roleList = roleList;
-    }
+	public void setRoleList(List<Role> roleList) {
+		this.roleList = roleList;
+	}
 
-    public List<Subject> getSubjects() {
-        return subjects;
-    }
+	public List<Subject> getSubjects() {
+		return subjects;
+	}
 
-    public void setSubjects(List<Subject> subjects) {
-        this.subjects = subjects;
-    }
+	public void setSubjects(List<Subject> subjects) {
+		this.subjects = subjects;
+	}
 
-    public List<Scores> getScoresList() {
-        return scoresList;
-    }
+	public List<ScoresTable> getScoresTableList() {
+		return scoresTableList;
+	}
 
-    public void setScoresList(List<Scores> scoresList) {
-        this.scoresList = scoresList;
-    }
+	public void setScoresTableList(List<ScoresTable> scoresTableList) {
+		this.scoresTableList = scoresTableList;
+	}
 
-    public List<UserLearningOutcome> getUserLearningoutcomeList() {
-        return userLearningoutcomeList;
-    }
+	public List<UserLearningOutcome> getUserLearningoutcomeList() {
+		return userLearningoutcomeList;
+	}
 
-    public void setUserLearningoutcomeList(List<UserLearningOutcome> userLearningoutcomeList) {
-        this.userLearningoutcomeList = userLearningoutcomeList;
-    }
+	public void setUserLearningoutcomeList(List<UserLearningOutcome> userLearningoutcomeList) {
+		this.userLearningoutcomeList = userLearningoutcomeList;
+	}
 
-    public Khoa getKhoa() {
-        return khoa;
-    }
+	public Department getDepartment() {
+		return department;
+	}
 
-    public void setKhoa(Khoa khoa) {
-        this.khoa = khoa;
-    }
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
 
-    public List<UserSubjectCoursesGoal> getUserSubjectCoursesgoalList() {
-        return userSubjectCoursesgoalList;
-    }
+	public List<UserSubjectCoursesGoal> getUserSubjectCoursesgoalList() {
+		return userSubjectCoursesgoalList;
+	}
 
-    public void setUserSubjectCoursesgoalList(List<UserSubjectCoursesGoal> userSubjectCoursesgoalList) {
-        this.userSubjectCoursesgoalList = userSubjectCoursesgoalList;
-    }
-
-    @Override
-    public String toString() {
-        return this.username;
-    }
+	public void setUserSubjectCoursesgoalList(List<UserSubjectCoursesGoal> userSubjectCoursesgoalList) {
+		this.userSubjectCoursesgoalList = userSubjectCoursesgoalList;
+	}
 
 }

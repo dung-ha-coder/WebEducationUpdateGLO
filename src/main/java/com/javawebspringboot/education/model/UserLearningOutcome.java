@@ -17,81 +17,69 @@ import javax.persistence.Table;
 @Table(name = "user_learningoutcome")
 public class UserLearningOutcome implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "id_user_learning_outcome")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idUserLearningOutcome;
+	@Id
+	@Column(name = "id_user_learning_outcome")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer idUserLearningOutcome;
 
-    @JoinColumn(name = "id_user")
-    @OneToOne
-    private User user;
+	@JoinColumn(name = "id_user")
+	@OneToOne
+	private User user;
 
-    @JoinColumn(name = "id_learningoutcome", referencedColumnName = "id_chuandaura")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private LearningOutcome learningoutcome;
+	@JoinColumn(name = "id_learningoutcome", referencedColumnName = "id_learningoutcome")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private LearningOutcome learningOutcome;
 
-    @Column(name = "percent")
-    private Float percent;
+	@Column(name = "percent")
+	private Float percent;
 
-    @Column(name = "evaluate")
-    private String evaluate;
+	
 
-    public UserLearningOutcome() {
-        super();
-    }
+	public UserLearningOutcome() {
+		super();
+	}
 
-    public UserLearningOutcome(User user, LearningOutcome learningoutcome, Float percent, String evaluate) {
-        this.user = user;
-        this.learningoutcome = learningoutcome;
-        this.percent = percent;
-        this.evaluate = evaluate;
-    }
+	public UserLearningOutcome(User user, LearningOutcome learningOutcome, Float percent) {
+		super();
+		this.user = user;
+		this.learningOutcome = learningOutcome;
+		this.percent = percent;
+	}
 
-    public LearningOutcome getLearningoutcome() {
-        return learningoutcome;
-    }
+	public LearningOutcome getLearningOutcome() {
+		return learningOutcome;
+	}
 
-    public void setLearningoutcome(LearningOutcome learningoutcome) {
-        this.learningoutcome = learningoutcome;
-    }
+	public void setLearningOutcome(LearningOutcome learningOutcome) {
+		this.learningOutcome = learningOutcome;
+	}
 
-    public Integer getIdUserLearningOutcome() {
-        return idUserLearningOutcome;
-    }
+	public Integer getIdUserLearningOutcome() {
+		return idUserLearningOutcome;
+	}
 
-    public void setIdUserLearningOutcome(Integer idUserLearningOutcome) {
-        this.idUserLearningOutcome = idUserLearningOutcome;
-    }
+	public void setIdUserLearningOutcome(Integer idUserLearningOutcome) {
+		this.idUserLearningOutcome = idUserLearningOutcome;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    public Float getPercent() {
-        return percent;
-    }
+	public Float getPercent() {
+		return percent;
+	}
 
-    public void setPercent(Float percent) {
-        this.percent = percent;
-    }
+	public void setPercent(Float percent) {
+		this.percent = percent;
+	}
 
-    public String getEvaluate() {
-        return evaluate;
-    }
-
-    public void setEvaluate(String evaluate) {
-        this.evaluate = evaluate;
-    }
-
-    @Override
-    public String toString() {
-        return this.evaluate;
-    }
+	
 
 }

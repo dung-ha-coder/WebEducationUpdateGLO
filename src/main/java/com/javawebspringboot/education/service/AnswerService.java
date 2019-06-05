@@ -7,5 +7,5 @@ import com.javawebspringboot.education.model.Subject;
 
 public interface AnswerService {
 
-	List<Answer> findBySubjectAndIdKithi(Subject subject, Integer idKithi);
+	List<Answer> findBySubjectAndIdExamOrderByIdExam(Subject subject, Integer idKithi);
 }

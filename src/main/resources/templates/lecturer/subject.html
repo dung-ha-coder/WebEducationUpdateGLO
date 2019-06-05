@@ -121,8 +121,7 @@
 
 							<button class="btn btn-link collapsed" type="button"
 								data-toggle="collapse" data-target="#collapseTwo"
-								aria-expanded="false" aria-controls="collapseTwo">Bảng
-								điểm môn học</button>
+								aria-expanded="false" aria-controls="collapseTwo">Bảng điểm môn học</button>
 
 						</div>
 						<div id="collapseTwo" class="collapse"
@@ -147,17 +146,17 @@
 									<tbody>
 
 										<tr th:each="subject_score, itrStat:${subjectScore}"
-											th:classappend="${subject_score.diemTb < 5.0} ? 'chuadat' : 'dat' ">
+											th:classappend="${subject_score.scoreAverage < 5.0} ? 'chuadat' : 'dat' ">
 
 											<td th:text="${itrStat.index + 1}"></td>
 											<td th:text="${subject_score.user.username}"></td>
 											<td th:text="${subject_score.user.fullname}"></td>
 											<td th:text="${subject_score.user.idUser}"></td>
-											<td th:text="${subject_score.diemQt}"></td>
-											<td th:text="${subject_score.diemTh}"></td>
-											<td th:text="${subject_score.diemGk}"></td>
-											<td th:text="${subject_score.diemCk}"></td>
-											<td th:text="${subject_score.diemTb}"></td>
+											<td th:text="${subject_score.scoreProcess}"></td>
+											<td th:text="${subject_score.scorePractice}"></td>
+											<td th:text="${subject_score.scoreMidTerm}"></td>
+											<td th:text="${subject_score.scoreEndTerm}"></td>
+											<td th:text="${subject_score.scoreAverage}"></td>
 
 
 										</tr>

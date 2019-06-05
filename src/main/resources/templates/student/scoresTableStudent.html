@@ -36,31 +36,21 @@
 						</thead>
 						<tbody>
 							<tr th:each="score, itrStat : ${scoresTable}"
-								th:classappend="${score.diemTb < 5.0 } ? 'chuadat' : 'dat' ">
+								th:classappend="${score.scoreAverage < 5.0 } ? 'chuadat' : 'dat' ">
 
 								<td th:text="${itrStat.index + 1}">1</td>
-								<td th:text="${score.monhoc.nameSubject} ">Môn học</td>
+								<td th:text="${score.subject.nameSubject} ">Môn học</td>
 
 
-								<td th:text="${score.diemQt}">Điểm quá trình</td>
-								<td th:text="${score.diemTh}">Điểm Thực hành</td>
-								<td th:text="${score.diemGk}">Điểm giữa kì</td>
-								<td th:text="${score.diemCk}">Điểm cuối kì</td>
-								<td th:text="${score.diemTb}">Điểm trung bình</td>
+								<td th:text="${score.scoreProcess}">Điểm quá trình</td>
+								<td th:text="${score.scorePractice}">Điểm Thực hành</td>
+								<td th:text="${score.scoreMidTerm}">Điểm giữa kì</td>
+								<td th:text="${score.scoreEndTerm}">Điểm cuối kì</td>
+								<td th:text="${score.scoreAverage}">Điểm trung bình</td>
 
 
 
 
-								<!-- <td th:text="${score.diemQt !=null} ? ${score.diemQt} : 'null' ">Điểm
-									quá trình</td>
-								<td th:text="${score.diemTh !=null} ? ${score.diemTh} : 'null' ">Điểm
-									Thực hành</td>
-								<td th:text="${score.diemGk !=null} ? ${score.diemGk} : 'null' ">Điểm
-									giữa kì</td>
-								<td th:text="${score.diemCk !=null} ? ${score.diemCk} : 'null' ">Điểm
-									cuối kì</td>
-								<td th:text="${score.diemTb !=null} ? ${score.diemTb} : 'null' ">Điểm
-									trung bình</td> -->
 							</tr>
 
 						</tbody>

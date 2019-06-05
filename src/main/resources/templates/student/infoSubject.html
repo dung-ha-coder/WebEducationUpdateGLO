@@ -4,7 +4,7 @@
 <head th:replace="student/template/head::head"></head>
 
 <head>
-	<script th:src="@{/student/js/chart.js}"></script>
+<script th:src="@{/student/js/chart.js}"></script>
 
 </head>
 
@@ -27,7 +27,7 @@
 				</div>
 
 				<div class="my-2">
-					<table class="table table-hover table-bordered">
+					<table  class="table table-hover table-bordered">
 						<thead class="thead-light">
 							<tr>
 								<th scope="col">STT</th>
@@ -41,10 +41,11 @@
 							<tr th:each="usg, itrStat : ${userSubjectCoursesGoal}"
 								th:classappend="${usg.percent < 50.0} ? 'chuadat' : 'dat' ">
 								<td th:text="${itrStat.index + 1}"></td>
-								<td th:text="${usg.coursesgoal.sign}"></td>
-								<td th:text="${usg.coursesgoal.nameCoursesGoal}"></td>
+								<td th:text="${usg.coursesGoal.sign}"></td>
+								<td th:text="${usg.coursesGoal.nameCoursesGoal}"></td>
 								<td th:text="${usg.percent + '%' }"></td>
-								<td th:text="${usg.evaluate}"></td>
+								<td th:if="${usg.percent >=50}" th:text="'Đạt'"></td>
+								<td th:if="${usg.percent <50}" th:text="'Chưa Đạt'"></td>
 							</tr>
 
 						</tbody>

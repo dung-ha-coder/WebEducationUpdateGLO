@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class LoginLogoutController {
-	
-	
-	
 
 	@RequestMapping("/login")
 	public String loginPage() {

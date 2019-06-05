@@ -4,47 +4,42 @@ import java.util.List;
 
 public class TableScore {
 
-    private String maSV;
-    private String tenSV;
-    private List<Float> dsDiem;
+	private String codeStudent;
+	private String nameStudent;
+	private List<Float> scoreList;
 
-    public TableScore() {
-    }
+	public TableScore() {
+	}
 
-    public TableScore(String maSV, String tenSV, List<Float> dsDiem) {
-        this.maSV = maSV;
-        this.tenSV = tenSV;
-        this.dsDiem = dsDiem;
-    }
+	public TableScore(String codeStudent, String nameStudent, List<Float> scoreList) {
+		super();
+		this.codeStudent = codeStudent;
+		this.nameStudent = nameStudent;
+		this.scoreList = scoreList;
+	}
 
-    public String getMaSV() {
-        return maSV;
-    }
+	public String getCodeStudent() {
+		return codeStudent;
+	}
 
-    public void setMaSV(String maSV) {
-        this.maSV = maSV;
-    }
+	public void setCodeStudent(String codeStudent) {
+		this.codeStudent = codeStudent;
+	}
 
-    public String getTenSV() {
-        return tenSV;
-    }
+	public String getNameStudent() {
+		return nameStudent;
+	}
 
-    public void setTenSV(String tenSV) {
-        this.tenSV = tenSV;
-    }
+	public void setNameStudent(String nameStudent) {
+		this.nameStudent = nameStudent;
+	}
 
-    public List<Float> getDsDiem() {
-        return dsDiem;
-    }
+	public List<Float> getScoreList() {
+		return scoreList;
+	}
 
-    public void setDsDiem(List<Float> dsDiem) {
-        this.dsDiem = dsDiem;
-    }
-
-    @Override
-    public String toString() {
-
-        return this.maSV + " - " + this.tenSV;
-    }
+	public void setScoreList(List<Float> scoreList) {
+		this.scoreList = scoreList;
+	}
 
 }

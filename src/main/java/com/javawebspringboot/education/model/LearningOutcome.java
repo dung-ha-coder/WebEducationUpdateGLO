@@ -22,51 +22,34 @@ public class LearningOutcome implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "id_chuandaura")
+	@Column(name = "id_learningoutcome")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer idLearningOutcome;
 
-	@Column(name = "kihieu")
-	private String kiHieu;
+	@Column(name = "sign")
+	private String sign;
 
-	@Column(name = "tenchuandaura")
-	private String tenChuanDauRa;
+	@Column(name = "namelearningoutcome")
+	private String nameLearningOutcome;
 
-	@OneToMany(mappedBy = "learningoutcome", fetch = FetchType.LAZY)
-	private List<UserLearningOutcome> userLearningoutcomeList;
+	@OneToMany(mappedBy = "learningOutcome", fetch = FetchType.LAZY)
+	private List<UserLearningOutcome> userLearningOutcomeList;
 
 	@ManyToMany
-	@JoinTable(name = "coursesgoal_learningoutcome", joinColumns = @JoinColumn(name = "id_learning_outcome", referencedColumnName = "id_chuandaura"), 
-		inverseJoinColumns = @JoinColumn(name = "id_courses_goal", referencedColumnName = "id_course_goal"))
+	@JoinTable(name = "coursesgoal_learningoutcome", joinColumns = @JoinColumn(name = "id_learning_outcome", referencedColumnName = "id_learningoutcome"), inverseJoinColumns = @JoinColumn(name = "id_courses_goal", referencedColumnName = "id_course_goal"))
 	private List<CoursesGoal> coursesGoalsList;
-	
+
 	public LearningOutcome() {
 		super();
 	}
 
-	public LearningOutcome(String kiHieu, String tenChuanDauRa, List<UserLearningOutcome> userLearningoutcomeList,
+	public LearningOutcome(String sign, String nameLearningOutcome, List<UserLearningOutcome> userLearningOutcomeList,
 			List<CoursesGoal> coursesGoalsList) {
 		super();
-		this.kiHieu = kiHieu;
-		this.tenChuanDauRa = tenChuanDauRa;
-		this.userLearningoutcomeList = userLearningoutcomeList;
+		this.sign = sign;
+		this.nameLearningOutcome = nameLearningOutcome;
+		this.userLearningOutcomeList = userLearningOutcomeList;
 		this.coursesGoalsList = coursesGoalsList;
-	}
-
-	public List<CoursesGoal> getCoursesGoalsList() {
-		return coursesGoalsList;
-	}
-
-	public void setCoursesGoalsList(List<CoursesGoal> coursesGoalsList) {
-		this.coursesGoalsList = coursesGoalsList;
-	}
-
-	public List<UserLearningOutcome> getUserLearningoutcomeList() {
-		return userLearningoutcomeList;
-	}
-
-	public void setUserLearningoutcomeList(List<UserLearningOutcome> userLearningoutcomeList) {
-		this.userLearningoutcomeList = userLearningoutcomeList;
 	}
 
 	public Integer getIdLearningOutcome() {
@@ -77,26 +60,36 @@ public class LearningOutcome implements Serializable {
 		this.idLearningOutcome = idLearningOutcome;
 	}
 
-	public String getKiHieu() {
-		return kiHieu;
+	public String getSign() {
+		return sign;
 	}
 
-	public void setKiHieu(String kiHieu) {
-		this.kiHieu = kiHieu;
+	public void setSign(String sign) {
+		this.sign = sign;
 	}
 
-	public String getTenChuanDauRa() {
-		return tenChuanDauRa;
+	public String getNameLearningOutcome() {
+		return nameLearningOutcome;
 	}
 
-	public void setTenChuanDauRa(String tenChuanDauRa) {
-		this.tenChuanDauRa = tenChuanDauRa;
+	public void setNameLearningOutcome(String nameLearningOutcome) {
+		this.nameLearningOutcome = nameLearningOutcome;
 	}
 
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return this.getTenChuanDauRa();
+	public List<UserLearningOutcome> getUserLearningOutcomeList() {
+		return userLearningOutcomeList;
+	}
+
+	public void setUserLearningoutcomeList(List<UserLearningOutcome> userLearningOutcomeList) {
+		this.userLearningOutcomeList = userLearningOutcomeList;
+	}
+
+	public List<CoursesGoal> getCoursesGoalsList() {
+		return coursesGoalsList;
+	}
+
+	public void setCoursesGoalsList(List<CoursesGoal> coursesGoalsList) {
+		this.coursesGoalsList = coursesGoalsList;
 	}
 
 }
