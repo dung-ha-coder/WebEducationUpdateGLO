@@ -1,5 +1,7 @@
 package com.javawebspringboot.education.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +15,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
 	Subject findByCodeSubject(String codeSubject);
 
 	Subject findByIdSubject(Integer idSubject);
+	
+	List<Subject> findAllByOrderByStartTimeAsc();
 }

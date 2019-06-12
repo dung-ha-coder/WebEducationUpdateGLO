@@ -3,12 +3,16 @@ package com.javawebspringboot.education.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -25,17 +29,55 @@ public class Department implements Serializable {
 	@Column(name = "name_department")
 	private String nameDepartment;
 
+	@OneToOne
+	@JoinColumn(name = "id_user_head_department")
+	private User userHeadDepartment;
+
 	@OneToMany(mappedBy = "department")
 	private List<User> userList;
+
+	@OneToMany(mappedBy = "department", cascade=  CascadeType.REMOVE, fetch=FetchType.LAZY)
+	private List<LearningOutcome> learningOutcomeList;
+
+	@OneToMany(mappedBy = "department")
+	private List<Subject> subjectList;
 
 	public Department() {
 		super();
 	}
 
-	public Department(String nameDepartment, List<User> userList) {
+	public Department(String nameDepartment, User userHeadDepartment, List<User> userList,
+			List<LearningOutcome> learningOutcomeList, List<Subject> subjectList) {
 		super();
 		this.nameDepartment = nameDepartment;
+		this.userHeadDepartment = userHeadDepartment;
 		this.userList = userList;
+		this.learningOutcomeList = learningOutcomeList;
+		this.subjectList = subjectList;
+	}
+
+	public List<Subject> getSubjectList() {
+		return subjectList;
+	}
+
+	public void setSubjectList(List<Subject> subjectList) {
+		this.subjectList = subjectList;
+	}
+
+	public List<LearningOutcome> getLearningOutcomeList() {
+		return learningOutcomeList;
+	}
+
+	public void setLearningOutcomeList(List<LearningOutcome> learningOutcomeList) {
+		this.learningOutcomeList = learningOutcomeList;
+	}
+
+	public User getUserHeadDepartment() {
+		return userHeadDepartment;
+	}
+
+	public void setUserHeadDepartment(User userHeadDepartment) {
+		this.userHeadDepartment = userHeadDepartment;
 	}
 
 	public Integer getIdDepartment() {

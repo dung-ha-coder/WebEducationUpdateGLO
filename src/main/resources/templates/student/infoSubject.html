@@ -22,12 +22,12 @@
 			<!-- Post Content Column -->
 			<div class="col-lg-8">
 
-				<div class="card my-2">
+				<div class="card mt-2">
 					<h5 class="card-header">Các chuẩn môn học</h5>
 				</div>
 
-				<div class="my-2">
-					<table  class="table table-hover table-bordered">
+				<div>
+					<table class="table table-hover table-bordered">
 						<thead class="thead-light">
 							<tr>
 								<th scope="col">STT</th>
@@ -52,13 +52,13 @@
 					</table>
 				</div>
 
-				<div class="card my-2">
-					<h5 class="card-header">Bieu do</h5>
+				<div class="card mt-2">
+					<h5 class="card-header">Biểu đồ thể hiện các G đạt được</h5>
 				</div>
 
 
 
-				<div class="my-2">
+				<div class="mb-2">
 					<canvas id="ChartDemo" style="background: white;"></canvas>
 					<script type="text/javascript" th:inline="javascript">
 						/*<![CDATA[*/
@@ -69,16 +69,31 @@
 								labels: /*[[ ${label} ]]*/,
 								datasets: [
 									{
-										label: "Chart-1",
-										borderColor: 'rgb(255, 0, 4)',
+										label: "Biểu đồ thể hiện các G đạt được",
 										lineTension: 0,
 										fill: false,
 										data: /*[[ ${point} ]]*/,
+										backgroundColor: [
+											 'rgba(255, 99, 132, 1)',
+								                'rgba(54, 162, 235, 1)',
+								                'rgba(255, 206, 86, 1)',
+								                'rgba(75, 192, 192, 1)',
+								                'rgba(153, 102, 255, 1)',
+								                'rgba(255, 159, 64, 1)'
+							            ],
+							           
 									},
 								]
 							},
 							options: {
 								responsive: true,
+								scales: {
+							        yAxes: [{
+							            ticks: {
+							                beginAtZero: true
+							            }
+							        }]
+							    }
 							}
 						});
    					 /*]]>*/

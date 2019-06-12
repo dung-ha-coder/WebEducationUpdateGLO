@@ -3,6 +3,7 @@ package com.javawebspringboot.education.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,10 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "learningoutcome")
@@ -32,24 +37,41 @@ public class LearningOutcome implements Serializable {
 	@Column(name = "namelearningoutcome")
 	private String nameLearningOutcome;
 
-	@OneToMany(mappedBy = "learningOutcome", fetch = FetchType.LAZY)
+	@ManyToOne
+	@JoinColumn(name = "id_department")
+	private Department department;
+
+	@OneToMany(mappedBy = "learningOutcome", cascade = CascadeType.REMOVE,fetch = FetchType.EAGER)
 	private List<UserLearningOutcome> userLearningOutcomeList;
 
-	@ManyToMany
-	@JoinTable(name = "coursesgoal_learningoutcome", joinColumns = @JoinColumn(name = "id_learning_outcome", referencedColumnName = "id_learningoutcome"), inverseJoinColumns = @JoinColumn(name = "id_courses_goal", referencedColumnName = "id_course_goal"))
+	//
+	@ManyToMany(mappedBy = "learningOutcomeList")
 	private List<CoursesGoal> coursesGoalsList;
 
 	public LearningOutcome() {
 		super();
 	}
 
-	public LearningOutcome(String sign, String nameLearningOutcome, List<UserLearningOutcome> userLearningOutcomeList,
-			List<CoursesGoal> coursesGoalsList) {
+	public LearningOutcome(String sign, String nameLearningOutcome, Department department,
+			List<UserLearningOutcome> userLearningOutcomeList, List<CoursesGoal> coursesGoalsList) {
 		super();
 		this.sign = sign;
 		this.nameLearningOutcome = nameLearningOutcome;
+		this.department = department;
 		this.userLearningOutcomeList = userLearningOutcomeList;
 		this.coursesGoalsList = coursesGoalsList;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	public void setUserLearningOutcomeList(List<UserLearningOutcome> userLearningOutcomeList) {
+		this.userLearningOutcomeList = userLearningOutcomeList;
 	}
 
 	public Integer getIdLearningOutcome() {

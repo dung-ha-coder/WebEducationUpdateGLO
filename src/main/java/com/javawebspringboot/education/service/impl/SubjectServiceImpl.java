@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -129,6 +128,11 @@ public class SubjectServiceImpl implements SubjectService {
 			} catch (IOException e) {
 
 				return null;
+			} finally {
+				try {
+					workbook.close();
+				} catch (IOException e) {
+				}
 			}
 		} else if (lowerCaseFileName.endsWith(".xls")) {
 			try {
@@ -231,12 +235,10 @@ public class SubjectServiceImpl implements SubjectService {
 	}
 
 	@Override
-	public void readData(List<TableScore> listTableScore, Integer idSubject, String cotDiem) {
+	public void readData(List<TableScore> listTableScore, Subject subject, String cotDiem) {
 		// 1 mon hoc chi co nhieu nhat 4 cot diem chinh
 		// vi the khi client truyen len chuoi -> ma cot diem
 		int idExam = getIdCotDiem(cotDiem);
-		Subject subject = subjectRepository.findByIdSubject(idSubject);
-
 		// lay du lieu bang anwer de biet duoc cau hoi nao, cua mon hoc nay, ung voi ki
 		// thi nay
 		// thi cau hoi nay se co nhung chuan dau ra mon hoc tuong ung thong qua
@@ -291,7 +293,7 @@ public class SubjectServiceImpl implements SubjectService {
 			}
 
 			// luu nhung G ma sinh vien nay dat duoc
-			//saveCourseGoal(coursesGoalMap, sinhVien, subject);
+			saveCourseGoal(coursesGoalMap, sinhVien, subject);
 			saveLearningOutcome(learningOutcomeMap, sinhVien);
 
 		}
@@ -388,7 +390,7 @@ public class SubjectServiceImpl implements SubjectService {
 						coursesGoalMap.get(coursesGoal));
 			}
 			// luu vao csdl
-			// userSubjectCoursesGoalRepository.save(userSubjectCoursesGoal);
+			userSubjectCoursesGoalRepository.save(userSubjectCoursesGoal);
 		}
 
 	}
@@ -434,13 +436,14 @@ public class SubjectServiceImpl implements SubjectService {
 	private int getIdCotDiem(String cotDiem) {
 		int idExam = 0;
 		switch (cotDiem) {
-		case "diem-thuc-hanh":
+
+		case "diem-qua-trinh":
 			idExam = 1;
 			break;
-		case "diem-qua-trinh":
+
+		case "diem-thuc-hanh":
 			idExam = 2;
 			break;
-
 		case "diem-giua-ki":
 			idExam = 3;
 			break;
@@ -451,5 +454,27 @@ public class SubjectServiceImpl implements SubjectService {
 
 		}
 		return idExam;
+	}
+
+	@Override
+	public List<Subject> findAllByOrderByStartTimeAsc() {
+		return subjectRepository.findAllByOrderByStartTimeAsc();
+	}
+
+	@Override
+	public void newSubject(Subject subject) {
+		subjectRepository.save(subject);
+
+	}
+
+	@Override
+	public void saveAnswer(Integer idSubject, Integer idExam, String contentAnswer) {
+
+		Subject subject = subjectRepository.findByIdSubject(idSubject);
+		Answer answer = new Answer(idExam, subject, contentAnswer);
+		List<Answer> list = new ArrayList<>();
+		list.add(answer);
+		subject.setAnswerList(list);
+		subjectRepository.save(subject);
 	}
 }

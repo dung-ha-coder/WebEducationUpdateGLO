@@ -14,5 +14,12 @@ public interface SubjectService {
 
 	List<TableScore> fileHandler(MultipartFile fileExcel) throws ReadFileException;
 
-	void readData(List<TableScore> listTableScore, Integer idSubject, String cotDiem);
+	void readData(List<TableScore> listTableScore, Subject subject, String cotDiem);
+
+	List<Subject> findAllByOrderByStartTimeAsc();
+
+	void newSubject(Subject subject);
+
+	void saveAnswer(Integer idSubject, Integer idExam, String contentAnswer);
+
 }

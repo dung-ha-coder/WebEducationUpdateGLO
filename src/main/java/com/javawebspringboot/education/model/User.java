@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -42,8 +43,7 @@ public class User implements Serializable {
 	private Date dayOfBirth;
 
 	@ManyToMany()
-	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id_user"), 
-	inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "id_role"))
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "id_role"))
 	private List<Role> roleList;
 
 	@ManyToMany
@@ -56,12 +56,32 @@ public class User implements Serializable {
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<UserLearningOutcome> userLearningoutcomeList;
 
+	// user thuoc khoa nao
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_department", referencedColumnName = "id_department")
 	private Department department;
 
+	// truong khoa
+	@OneToOne(mappedBy = "userHeadDepartment")
+	private Department departments;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
 	private List<UserSubjectCoursesGoal> userSubjectCoursesgoalList;
+
+	// user thuoc lop sinh hoat nao
+	@OneToMany(mappedBy = "userAdviser", fetch = FetchType.LAZY)
+	private List<LivingClass> livingClasseList;
+
+	// co van hoc tap
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_living_class", referencedColumnName = "id_living_class")
+	private LivingClass livingClass;
+
+	@OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+	private List<Subject> listSubjectTeacher;
+
+	@OneToMany(mappedBy = "practiceTeacher", fetch = FetchType.LAZY)
+	private List<Subject> listSubjectPracticeTeacher;
 
 	public User() {
 		super();
@@ -69,8 +89,9 @@ public class User implements Serializable {
 
 	public User(String username, String password, String fullname, Date dayOfBirth, List<Role> roleList,
 			List<Subject> subjects, List<ScoresTable> scoresTableList,
-			List<UserLearningOutcome> userLearningoutcomeList, Department department,
-			List<UserSubjectCoursesGoal> userSubjectCoursesgoalList) {
+			List<UserLearningOutcome> userLearningoutcomeList, Department department, Department departments,
+			List<UserSubjectCoursesGoal> userSubjectCoursesgoalList, List<LivingClass> livingClasseList,
+			LivingClass livingClass, List<Subject> listSubjectTeacher, List<Subject> listSubjectPracticeTeacher) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -81,7 +102,52 @@ public class User implements Serializable {
 		this.scoresTableList = scoresTableList;
 		this.userLearningoutcomeList = userLearningoutcomeList;
 		this.department = department;
+		this.departments = departments;
 		this.userSubjectCoursesgoalList = userSubjectCoursesgoalList;
+		this.livingClasseList = livingClasseList;
+		this.livingClass = livingClass;
+		this.listSubjectTeacher = listSubjectTeacher;
+		this.listSubjectPracticeTeacher = listSubjectPracticeTeacher;
+	}
+
+	public List<Subject> getListSubjectTeacher() {
+		return listSubjectTeacher;
+	}
+
+	public void setListSubjectTeacher(List<Subject> listSubjectTeacher) {
+		this.listSubjectTeacher = listSubjectTeacher;
+	}
+
+	public List<Subject> getListSubjectPracticeTeacher() {
+		return listSubjectPracticeTeacher;
+	}
+
+	public void setListSubjectPracticeTeacher(List<Subject> listSubjectPracticeTeacher) {
+		this.listSubjectPracticeTeacher = listSubjectPracticeTeacher;
+	}
+
+	public Department getDepartments() {
+		return departments;
+	}
+
+	public void setDepartments(Department departments) {
+		this.departments = departments;
+	}
+
+	public List<LivingClass> getLivingClasseList() {
+		return livingClasseList;
+	}
+
+	public void setLivingClasseList(List<LivingClass> livingClasseList) {
+		this.livingClasseList = livingClasseList;
+	}
+
+	public LivingClass getLivingClass() {
+		return livingClass;
+	}
+
+	public void setLivingClass(LivingClass livingClass) {
+		this.livingClass = livingClass;
 	}
 
 	public Integer getIdUser() {

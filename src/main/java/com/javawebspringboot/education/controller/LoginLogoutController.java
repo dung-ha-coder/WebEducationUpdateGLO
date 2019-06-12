@@ -23,7 +23,6 @@ public class LoginLogoutController {
 	@RequestMapping("/loginHandler")
 	public String loginHandler(Model model) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
 		if (userDetails.getAuthorities().toString().equals("[ROLE_STUDENT]")) {
 			return "redirect:/student";
 		}

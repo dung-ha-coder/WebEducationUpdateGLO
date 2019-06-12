@@ -31,9 +31,9 @@
 						<div class="col col-md-8 card-body thong_tin_user">
 							<p th:text=" 'Họ và tên: ' +${user.fullname} ">Fullname: Ha
 								Tien Dung</p>
-							<p th:text=" 'Ngày sinh: ' + ${#dates.format(user.ngaySinh, 'dd-MM-yyyy')}" >
+							<p th:text=" 'Ngày sinh: ' + ${#dates.format(user.dayOfBirth, 'dd-MM-yyyy')}" >
 								Ngay sinh: 222222 </p>
-							<p th:text=" 'Khoa quản lý: ' + ${user.khoa.tenKhoa} ">Khoa:
+							<p th:text=" 'Khoa quản lý: ' + ${user.department.nameDepartment} ">Khoa:
 								Cong nghe thong tin</p>
 
 						</div>
