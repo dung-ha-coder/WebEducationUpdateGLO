@@ -20,6 +20,10 @@ public interface UserRepository  extends JpaRepository<User, Integer>{
 	Page<User> findByRoleList(List<Role> listRole, Pageable pageable);
 	
 	List<User> findByRoleList(List<Role> listRole);
+        
+	User findByIdUser(Integer idUser);
 	
 	List<User> findByDepartmentAndRoleList(Department department, List<Role> roleList);
+	
+	
 }

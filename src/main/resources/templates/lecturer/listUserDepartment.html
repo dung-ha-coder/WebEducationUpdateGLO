@@ -19,7 +19,7 @@
 			<div class="col-lg-8">
 
 				<div class="card mt-2 monhoc">
-					<h5 class="card-header">Danh sách giảng viên</h5>
+					<h5 class="card-header" th:text="'Danh sách giảng viên khoa ' + ${strName} "></h5>
 
 				</div>
 
@@ -38,7 +38,7 @@
 								<td th:text="${itrStat.index + 1}">1</td>
 								<td title="Xem thông tin user"><a
 									th:text="${user.username}"
-									th:href="@{/manage/xem-thong-tin-sinh-vien/}+${user.username}">user</a>
+									th:href="@{/lecturer/xem-thong-tin-giang-vien/}+${user.username}">user</a>
 								</td>
 								<td th:text="${user.fullname}">full name</td>
 								<td th:text="${#dates.format(user.dayOfBirth, 'dd-MM-yyyy')}">Ngày
@@ -53,7 +53,7 @@
 				
 				
 				<div class="card mt-2 monhoc">
-					<h5 class="card-header">Danh sách sinh viên</h5>
+					<h5 class="card-header" th:text="'Danh sách sinh viên khoa ' + ${strName} ">Danh sách sinh viên</h5>
 
 				</div>
 
@@ -72,7 +72,7 @@
 								<td th:text="${itrStat.index + 1}">1</td>
 								<td title="Xem thông tin user"><a
 									th:text="${user.username}"
-									th:href="@{/manage/xem-thong-tin-sinh-vien/}+${user.username}">user</a>
+									th:href="@{/lecturer/xem-thong-tin-sinh-vien/}+${user.username}">user</a>
 								</td>
 								<td th:text="${user.fullname}">full name</td>
 								<td th:text="${#dates.format(user.dayOfBirth, 'dd-MM-yyyy')}">Ngày

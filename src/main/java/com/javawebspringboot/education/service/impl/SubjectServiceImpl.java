@@ -1,12 +1,20 @@
 package com.javawebspringboot.education.service.impl;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -14,14 +22,19 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.javawebspringboot.education.exception.ReadFileException;
 import com.javawebspringboot.education.model.Answer;
 import com.javawebspringboot.education.model.CoursesGoal;
+import com.javawebspringboot.education.model.Department;
 import com.javawebspringboot.education.model.LearningOutcome;
 import com.javawebspringboot.education.model.ScoresTable;
 import com.javawebspringboot.education.model.Subject;
@@ -29,6 +42,7 @@ import com.javawebspringboot.education.model.User;
 import com.javawebspringboot.education.model.UserLearningOutcome;
 import com.javawebspringboot.education.model.UserSubjectCoursesGoal;
 import com.javawebspringboot.education.repository.AnswerRepository;
+import com.javawebspringboot.education.repository.DepartmentRepository;
 import com.javawebspringboot.education.repository.ScoresRepository;
 import com.javawebspringboot.education.repository.SubjectRepository;
 import com.javawebspringboot.education.repository.UserLearningOutcomeRepository;
@@ -43,6 +57,9 @@ public class SubjectServiceImpl implements SubjectService {
 
 	@Autowired
 	private SubjectRepository subjectRepository;
+
+	@Autowired
+	private DepartmentRepository departmentRepository;
 
 	@Autowired
 	private AnswerRepository answerRepository;
@@ -246,16 +263,16 @@ public class SubjectServiceImpl implements SubjectService {
 
 		// vi du: cau hoi 1, mon cong nghe java, ki thi giua ki
 		// se co cac chuan G1, G3,G4,...
-
 		List<Answer> answerList = answerRepository.findBySubjectAndIdExamOrderByIdExam(subject, idExam);
 		// tao Map chua key la CoursesGoal va value la %G dat duoc
 		Map<CoursesGoal, Float> coursesGoalMap = new HashMap<>();
 
+		for (Answer answer : answerList) {
+		}
 		// tung dong du lieu trong table da duoc luu tru trong listTableScore
 		// lap tung phan tu trong listTableScore <=> lay dong trong table
 		// listTableScore duoc luu tru nhu sau
 		// maSV | tenSV | diem cau 1| diem cau 2 | diem cau 3 | ....| diem tong
-
 		for (TableScore score : listTableScore) {
 			String maSV = score.getCodeStudent();
 			User sinhVien = userRepository.findByUsername(maSV);
@@ -279,7 +296,6 @@ public class SubjectServiceImpl implements SubjectService {
 
 					// dua gia tri cua G tung cau hoi vao Map - co G da ton tai trong csdl
 					// -> can tim %G cua sinh vien - mon hoc
-
 					putValueToMap(answerList, i, coursesGoalMap, phanTramG, learningOutcomeMap);
 
 					// tong diem cua bai thi
@@ -462,8 +478,15 @@ public class SubjectServiceImpl implements SubjectService {
 	}
 
 	@Override
-	public void newSubject(Subject subject) {
-		subjectRepository.save(subject);
+	public void newSubject(Subject subject, Integer idDepartment) {
+		if (subject != null) {
+			Department department = departmentRepository.findByIdDepartment(idDepartment);
+			subject.setDepartment(department);
+
+			subjectRepository.save(subject);
+		} else {
+			return;
+		}
 
 	}
 
@@ -477,4 +500,115 @@ public class SubjectServiceImpl implements SubjectService {
 		subject.setAnswerList(list);
 		subjectRepository.save(subject);
 	}
+
+	@Override
+	public List<Subject> findAllSubjectBy(User user) {
+		return subjectRepository.findByTeacherOrPracticeTeacher(user, user);
+	}
+
+	@Override
+	public List<Subject> registerSubject() {
+
+		Date date = new Date();
+		return subjectRepository.findByStartTimeGreaterThan(date);
+	}
+
+	@Override
+	public void dowloadFile(Integer idSubject, String strCotDiem, HttpServletResponse response) {
+
+		Subject subject = subjectRepository.findByIdSubject(idSubject);
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet spreadsheet = workbook.createSheet("sinhvien");
+
+		int sl = 0;
+		for (Answer answer : subject.getAnswerList()) {
+			if (answer.getIdExam() == getIdCotDiem(strCotDiem)) {
+				sl++;
+			}
+		}
+
+		XSSFRow row = spreadsheet.createRow(0);
+		XSSFCell cell;
+		int cc = 4 + sl;
+		// title
+		int stt = 0;
+		for (int i = 0; i < cc; i++) {
+			if (i == 0) {
+				cell = row.createCell(i);
+				cell.setCellValue("STT");
+			}
+			if (i == 1) {
+				cell = row.createCell(i);
+				cell.setCellValue("MSSV");
+			}
+
+			if (i == 2) {
+				cell = row.createCell(i);
+				cell.setCellValue("Ho va ten");
+			}
+
+			if (i > 2 && i < cc - 1) {
+				String nameAnswer = "Cau " + (++stt);
+				cell = row.createCell(i);
+				cell.setCellValue(nameAnswer);
+			}
+			if (i == cc - 1) {
+				cell = row.createCell(i);
+				cell.setCellValue("Tong");
+			}
+
+		}
+
+		for (int i = 0; i < subject.getUserList().size(); i++) {
+			XSSFRow row1 = spreadsheet.createRow(i + 1);
+			for (int j = 0; j < 3; j++) {
+				if (j == 0) {
+					cell = row1.createCell(j);
+					cell.setCellValue(i + 1);
+				}
+				if (j == 1) {
+					cell = row1.createCell(j);
+					cell.setCellValue(subject.getUserList().get(i).getUsername());
+				}
+				if (j == 2) {
+					cell = row1.createCell(j);
+					cell.setCellValue(subject.getUserList().get(i).getFullname());
+				}
+
+			}
+		}
+
+		try {
+			
+			File file = new File("DanhSachSinhVien.xlsx");
+			file.createNewFile();
+			FileOutputStream fileOutputStream = new FileOutputStream(file);
+			workbook.write(fileOutputStream);
+			fileOutputStream.close();
+
+			byte[] fileContent = Files.readAllBytes(file.toPath());
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-disposition", "attachment; filename=" + file.getName());
+			response.setContentLength(fileContent.length);
+			InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(fileContent));
+
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+		} catch (Exception e) {
+			System.out.println("khong dowloadFile duoc");
+		}
+	}
+
+	@Override
+	public List<Subject> findByDepartmentOrderByStartTimeAsc(Integer idDepartment) {
+		Department department = departmentRepository.findByIdDepartment(idDepartment);
+
+		return subjectRepository.findByDepartmentOrderByStartTimeAsc(department);
+	}
+
+	@Override
+	public List<Subject> findByTeacherOrPracticeTeacher(User teacher, User practiceTeacher) {
+		// TODO Auto-generated method stub
+		return subjectRepository.findByTeacherOrPracticeTeacher(teacher, practiceTeacher);
+	}
+
 }

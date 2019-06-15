@@ -6,46 +6,49 @@
 
 <body>
 
-	<!-- Navigation -->
-	<nav th:replace="student/template/nav::nav"></nav>
-	<header th:replace="student/template/header::header"></header>
-	<!-- Page Content -->
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12 col-md-6 col-lg-4">
-				<div th:replace="student/template/sidebar::sidebar"></div>
-			</div>
-			<!-- Post Content Column -->
-			<div class="col-sm-12 col-md-6 col-lg-8">
+    <!-- Navigation -->
+    <nav th:replace="student/template/nav::nav"></nav>
+    <header th:replace="student/template/header::header"></header>
+    <!-- Page Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <div th:replace="student/template/sidebar::sidebar"></div>
+            </div>
+            <!-- Post Content Column -->
+            <div class="col-sm-12 col-md-6 col-lg-8">
 
-				<div class="card mt-2">
-					<h5 class="card-header">Danh sách các môn học</h5>
-				</div>
+                <div class="card mt-2">
+                    <h5 class="card-header">Danh sách các môn học đang học</h5>
+                </div>
+                <div class="card my-1" th:each="subject : ${user.subjects}">
 
-				<div class="card my-1" th:each="subject : ${user.subjects}">
-					<div class="card-body card_body_monhoc" style="padding: 12px 20px;">
-						<h4 style="font-size: 18px;">
-							<a th:href="@{/chuan-mon-hoc/subject/} + ${subject.idSubject}"
-								th:text="${subject.nameSubject}">Tối ưu hóa công cụ tìm kiếm
-								- IE204.J21</a>
-						</h4>
-						<p style="margin: 0px">Giáo viên giảng dạy: adsfads</p>
-						<p style="margin: 0px">Giáo viên thực hành: adsfads</p>
-						<p style="margin: 0px">Số tín chỉ: 4</p>
-					</div>
-				</div>
-			</div>
+                    <div class="card-body card_body_monhoc" style="padding: 12px 20px;">
+                        <h4 style="font-size: 18px;">
+                            <a th:href="@{/chuan-mon-hoc/subject/} + ${subject.idSubject}" th:text="${subject.nameSubject}">Tối ưu hóa công cụ tìm kiếm
+                                - IE204.J21</a>
+                        </h4>
+                        <p style="margin: 0px" th:text=" 'Giáo viên giảng dạy: ' + ${subject.teacher.username} ">Giáo viên giảng dạy: adsfads</p>
+                        <p style="margin: 0px" th:if="${subject.practiceTeacher.username !=null}" th:text="'Giáo viên thực hành: ' +${subject.practiceTeacher.username} ">Giáo viên thực hành: adsfads</p>
+                        <p style="margin: 0px">Số tín chỉ: 4</p>
 
-		</div>
-		<!-- /.row -->
+                    </div>
+                </div>
+            </div>
 
-	</div>
-	<!-- /.container -->
 
-	<!-- Footer -->
-	<footer>
-		<div th:replace="student/template/footer::footer"></div>
-	</footer>
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer>
+        <div th:replace="student/template/footer::footer"></div>
+    </footer>
 
 
 </body>

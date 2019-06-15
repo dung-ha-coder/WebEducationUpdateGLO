@@ -58,18 +58,6 @@ public class ScoresServiceImpl implements ScoresService {
 		User sinhVien = userRepository.findByUsername(mssv);
 		ScoresTable score = scoresRepository.findByUserAndSubject(sinhVien, subject);
 
-		System.out.println("qt: " + subject.getRateProcess());
-		System.out.println("diem qt " + score.getScoreProcess());
-
-		System.out.println("th " + subject.getRatePractice());
-		System.out.println("diem th " + score.getScorePractice());
-
-		System.out.println("gk " + subject.getRateMidTerm());
-		System.out.println("diem gk " + score.getScoreMidTerm());
-
-		System.out.println("ck " + subject.getReateEndTerm());
-		System.out.println("diem ck " + score.getScoreEndTerm());
-
 		if ((subject.getRateProcess() != null && score.getScoreProcess() == null)
 				|| (subject.getRatePractice() != null && score.getScorePractice() == null)
 				|| (subject.getRateMidTerm() != null && score.getScoreMidTerm() == null)
@@ -157,8 +145,10 @@ public class ScoresServiceImpl implements ScoresService {
 		float tongDiem = 0;
 		int tongTC = 0;
 		for (ScoresTable scoresTable : sinhVien.getScoresTableList()) {
-			tongDiem += scoresTable.getScoreAverage() * scoresTable.getSubject().getNumberOfCredits();
-			tongTC += scoresTable.getSubject().getNumberOfCredits();
+			if (scoresTable.getScoreAverage() != null) {
+				tongDiem += scoresTable.getScoreAverage() * scoresTable.getSubject().getNumberOfCredits();
+				tongTC += scoresTable.getSubject().getNumberOfCredits();
+			}
 
 		}
 		return tongDiem / tongTC;
@@ -167,6 +157,7 @@ public class ScoresServiceImpl implements ScoresService {
 	@Override
 	public void getDataChart(List<String> label, List<Float> point, List<ScoresTable> scoresTables) {
 		label.add("Giỏi");
+
 		point.add(tinhXepLoai(scoresTables, 8.5, 10.0));
 
 		label.add("Khá");
